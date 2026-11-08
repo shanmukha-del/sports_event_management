@@ -1,0 +1,448 @@
+/* ==========================================================================
+   FIELDVERSE Organizer Portal - Tactical Command Centre Stylesheet
+   Dark, High-Precision Tournament Operations Dashboard
+   ========================================================================== */
+
+:root {
+  --canvas-dark: #0D1117;
+  --surface-panel: #161B22;
+  --surface-elevate: #21262D;
+  --border-tactical: #30363D;
+  --border-highlight: #388BFD;
+  --accent-action: #10B981;
+  --accent-action-hover: #059669;
+  --accent-warn: #F59E0B;
+  --accent-danger: #EF4444;
+  --accent-info: #06B6D4;
+  --text-pure: #F0F6FC;
+  --text-muted: #8B949E;
+  --text-dim: #6E7681;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-tactical: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--canvas-dark);
+  color: var(--text-pure);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: var(--text-pure);
+  line-height: 1.25;
+}
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* Dashboard Shell */
+.dashboard-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+aside.tactical-sidebar {
+  width: 260px;
+  background: var(--surface-panel);
+  border-right: 1px solid var(--border-tactical);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border-tactical);
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.badge-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-action);
+  color: #000;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.brand-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: #FFF;
+}
+.brand-text span { color: var(--accent-action); }
+
+.sidebar-menu {
+  padding: 20px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-category {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 12px 12px 6px;
+}
+
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+
+.sidebar-menu a:hover, .sidebar-menu a.active {
+  background: var(--surface-elevate);
+  color: var(--accent-action);
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-tactical);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* Main Dashboard Content Area */
+.dashboard-content-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Top Command Bar */
+header.command-bar {
+  height: 64px;
+  background: var(--surface-panel);
+  border-bottom: 1px solid var(--border-tactical);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.command-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-action);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-action);
+  box-shadow: 0 0 8px var(--accent-action);
+}
+
+.user-tag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+
+.btn-primary {
+  background: var(--accent-action);
+  color: #000;
+}
+.btn-primary:hover {
+  background: var(--accent-action-hover);
+}
+
+.btn-tactical {
+  background: var(--surface-elevate);
+  border-color: var(--border-tactical);
+  color: var(--text-pure);
+}
+.btn-tactical:hover {
+  border-color: var(--text-muted);
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--accent-danger);
+}
+.btn-danger:hover {
+  background: var(--accent-danger);
+  color: #FFF;
+}
+
+/* Panels */
+.dashboard-page {
+  padding: 32px;
+  flex: 1;
+  display: none;
+}
+.dashboard-page.active-page {
+  display: block;
+  animation: fadeIn 0.15s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* KPI Metrics Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.kpi-card {
+  background: var(--surface-panel);
+  border: 1px solid var(--border-tactical);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-tactical);
+}
+
+.kpi-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-pure);
+}
+
+.kpi-card.highlight .kpi-value {
+  color: var(--accent-action);
+}
+
+/* Tactical Panel Cards */
+.tactical-card {
+  background: var(--surface-panel);
+  border: 1px solid var(--border-tactical);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-tactical);
+}
+
+.tactical-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-tactical);
+}
+
+/* Forms */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface-elevate);
+  border: 1px solid var(--border-tactical);
+  border-radius: var(--radius-sm);
+  color: var(--text-pure);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-control:focus {
+  border-color: var(--accent-action);
+}
+
+/* Data Tables */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table.tactical-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+table.tactical-table th {
+  background: var(--surface-elevate);
+  color: var(--text-dim);
+  padding: 12px 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-tactical);
+}
+
+table.tactical-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-tactical);
+}
+
+table.tactical-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-approved { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+.badge-pending { background: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+.badge-rejected { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+.badge-draft { background: rgba(110, 118, 129, 0.2); color: #8B949E; }
+
+/* Modals */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-backdrop.active-modal {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--surface-panel);
+  border: 1px solid var(--border-tactical);
+  border-radius: var(--radius-md);
+  width: 580px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-tactical);
+  padding: 28px;
+}
+
+/* Responsive Mobile Layout */
+@media (max-width: 768px) {
+  .dashboard-shell {
+    flex-direction: column;
+  }
+  aside.tactical-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-tactical);
+  }
+  .sidebar-menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px;
+  }
+  .menu-category {
+    display: none;
+  }
+  .sidebar-menu a {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .sidebar-footer {
+    display: none;
+  }
+  header.command-bar {
+    padding: 0 16px;
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .dashboard-page {
+    padding: 16px;
+  }
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIELDVERSE Organizer – Tournament Command Centre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/organizer.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.__FIELDVERSE_CONFIG__ = {
+      url: "https://ijqsiqmcwpvczqnbccur.supabase.co",
+      anonKey: "sb_publishable_yNsjheFfmlkPR9jm0T33vA_2H3DRDr7"
+    };
+  </script>
+</head>
+<body>
+  <div class="dashboard-shell">
+    
+    <!-- Tactical Sidebar -->
+    <aside class="tactical-sidebar">
+      <div class="sidebar-header">
+        <a href="#" class="brand-badge" onclick="orgApp.showPage('dashboard')">
+          <div class="badge-icon">⚡</div>
+          <div class="brand-text">FIELD<span>VERSE</span></div>
+        </a>
+        <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px;">
+          Organizer Command
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="menu-category">Command</div>
+        <a id="nav-dashboard" class="active" onclick="orgApp.showPage('dashboard')">📊 Dashboard Overview</a>
+        <a id="nav-create-event" onclick="orgApp.showPage('create-event')">➕ Create New Event</a>
+        <a id="nav-manage-events" onclick="orgApp.showPage('manage-events')">🏆 Manage Events</a>
+        
+        <div class="menu-category">Operations</div>
+        <a id="nav-registrations" onclick="orgApp.showPage('registrations')">👥 Team Registrations</a>
+        <a id="nav-fixtures" onclick="orgApp.showPage('fixtures')">⚡ Smart Fixture Engine</a>
+        <a id="nav-score-console" onclick="orgApp.showPage('score-console')">🎯 Live Score Console</a>
+        
+        <div class="menu-category">Facilities & Comms</div>
+        <a id="nav-venues" onclick="orgApp.showPage('venues')">🏟️ Venue Management</a>
+        <a id="nav-announcements" onclick="orgApp.showPage('announcements')">📢 Broadcast Updates</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div id="org-user-info" style="margin-bottom: 8px;">
+          <strong id="org-name-display">Sunil Gavaskar Academy</strong>
+          <span id="org-status-badge" class="badge badge-approved" style="display: block; width: fit-content; margin-top: 4px;">VERIFIED</span>
+        </div>
+        <button class="btn btn-tactical" style="width: 100%; font-size: 11px;" onclick="orgApp.logout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Shell -->
+    <div class="dashboard-content-wrap">
+      
+      <!-- Top Command Bar -->
+      <header class="command-bar">
+        <div class="command-status">
+          <div class="status-dot"></div> TELEMETRY ENGINE ONLINE • SUPABASE POSTGRESQL CONNECTED
+        </div>
+        <div class="user-tag">
+          <button class="btn btn-primary" onclick="orgApp.showPage('create-event')">+ Host Tournament</button>
+        </div>
+      </header>
+
+      <!-- Pages Container -->
+      <main>
+
+        <!-- 1. DASHBOARD PAGE -->
+        <section id="page-dashboard" class="dashboard-page active-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Tournament Command Overview</h1>
+            <p style="color: var(--text-muted); font-size: 13px;">Real-time management metrics across all your hosted tournaments and matches.</p>
+          </div>
+
+          <!-- KPI Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card highlight">
+              <div class="kpi-label">My Events</div>
+              <div class="kpi-value" id="kpi-total-events">3</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Active Approved</div>
+              <div class="kpi-value" id="kpi-active-events">2</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Total Squads Registered</div>
+              <div class="kpi-value" id="kpi-total-regs">4</div>
+            </div>
+            <div class="kpi-card highlight">
+              <div class="kpi-label">Live Matches in Play</div>
+              <div class="kpi-value" id="kpi-live-matches">1</div>
+            </div>
+          </div>
+
+          <!-- Quick Navigation Cards -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+            <div class="tactical-card">
+              <div class="tactical-card-header">
+                <h3>⚡ Smart Fixture Generator</h3>
+                <span class="badge badge-approved">ENGINE ACTIVE</span>
+              </div>
+              <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+                Generate deterministic single-elimination knockout brackets or round-robin league schedules with automatic bye allocation and ground conflict detection.
+              </p>
+              <button class="btn btn-tactical" onclick="orgApp.showPage('fixtures')">Launch Fixture Engine →</button>
+            </div>
+
+            <div class="tactical-card">
+              <div class="tactical-card-header">
+                <h3>🎯 Live Match Score Console</h3>
+                <span class="badge badge-pending">TELEMETRY READY</span>
+              </div>
+              <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+                Update runs, wickets, overs, and match status in real time. Dispatches live telemetry events directly to player portals.
+              </p>
+              <button class="btn btn-primary" onclick="orgApp.showPage('score-console')">Open Score Console →</button>
+            </div>
+          </div>
+
+          <!-- Recent Registrations -->
+          <div class="tactical-card">
+            <div class="tactical-card-header">
+              <h3>Recent Squad Registrations</h3>
+              <button class="btn btn-tactical btn-sm" onclick="orgApp.showPage('registrations')">Manage All Registrations</button>
+            </div>
+            <div class="table-wrap">
+              <table class="tactical-table">
+                <thead>
+                  <tr>
+                    <th>Squad Name</th>
+                    <th>Tournament</th>
+                    <th>Captain</th>
+                    <th>Contact Phone</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-registrations-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. CREATE EVENT PAGE -->
+        <section id="page-create-event" class="dashboard-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Create New Sports Tournament</h1>
+            <p style="color: var(--text-muted); font-size: 13px;">Fill in the tournament specifications. Submitted events are sent to Admin for verification and publication.</p>
+          </div>
+
+          <div class="tactical-card">
+            <form id="create-event-form" onsubmit="orgApp.handleCreateEvent(event)">
+              <div class="form-grid">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label>Tournament Title *</label>
+                  <input type="text" class="form-control" id="ev-title" placeholder="e.g. Bangalore Premier Monsoon Trophy 2026" required>
+                </div>
+                
+                <div class="form-group">
+                  <label>Sport Discipline *</label>
+                  <select class="form-control" id="ev-sport" required>
+                    <!-- Injected via JS -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Tournament Format *</label>
+                  <select class="form-control" id="ev-format" required>
+                    <option value="knockout">Knockout (Single Elimination)</option>
+                    <option value="league">League (Round-Robin)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Allocated Venue / Ground *</label>
+                  <select class="form-control" id="ev-venue" required>
+                    <!-- Injected via JS -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Banner Image URL</label>
+                  <input type="url" class="form-control" id="ev-banner" placeholder="https://images.unsplash.com/photo-...">
+                </div>
+
+                <div class="form-group">
+                  <label>Tournament Start Date *</label>
+                  <input type="date" class="form-control" id="ev-start-date" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Tournament End Date *</label>
+                  <input type="date" class="form-control" id="ev-end-date" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Registration Start Date *</label>
+                  <input type="date" class="form-control" id="ev-reg-start" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Registration Deadline *</label>
+                  <input type="date" class="form-control" id="ev-reg-end" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Max Teams Capacity *</label>
+                  <input type="number" class="form-control" id="ev-max-teams" value="16" min="2" max="64" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Team Squad Size *</label>
+                  <input type="number" class="form-control" id="ev-team-size" value="11" min="1" max="25" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Entry Fee (₹) * (0 for Free)</label>
+                  <input type="number" class="form-control" id="ev-entry-fee" value="2500" min="0" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Total Prize Pool (₹)</label>
+                  <input type="number" class="form-control" id="ev-prize-pool" value="50000" min="0">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label>Tournament Description</label>
+                  <textarea class="form-control" id="ev-desc" rows="3" placeholder="Provide overview, eligibility, and tournament highlights..."></textarea>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label>Tournament Rules & Conditions</label>
+                  <textarea class="form-control" id="ev-rules" rows="3" placeholder="Ball specifications, dress code, match duration, spike shoe policy..."></textarea>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <button type="button" class="btn btn-tactical" onclick="orgApp.showPage('manage-events')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit for Admin Approval →</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- 3. MANAGE EVENTS PAGE -->
+        <section id="page-manage-events" class="dashboard-page">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+              <h1 style="font-size: 28px; margin-bottom: 4px;">Hosted Tournaments</h1>
+              <p style="color: var(--text-muted); font-size: 13px;">Monitor approval statuses, view registered teams, and coordinate fixtures.</p>
+            </div>
+            <button class="btn btn-primary" onclick="orgApp.showPage('create-event')">+ Create New Event</button>
+          </div>
+
+          <div class="tactical-card">
+            <div class="table-wrap">
+              <table class="tactical-table">
+                <thead>
+                  <tr>
+                    <th>Tournament Title</th>
+                    <th>Sport</th>
+                    <th>Format</th>
+                    <th>Dates</th>
+                    <th>Registered</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="manage-events-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. TEAM REGISTRATIONS PAGE -->
+        <section id="page-registrations" class="dashboard-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Team Registration Applications</h1>
+            <p style="color: var(--text-muted); font-size: 13px;">Review submitted squads, verify rosters, and approve teams for tournament brackets.</p>
+          </div>
+
+          <div class="tactical-card">
+            <div class="table-wrap">
+              <table class="tactical-table">
+                <thead>
+                  <tr>
+                    <th>Squad Name</th>
+                    <th>Tournament</th>
+                    <th>Captain Details</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Decision Action</th>
+                  </tr>
+                </thead>
+                <tbody id="all-registrations-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. SMART FIXTURE ENGINE PAGE -->
+        <section id="page-fixtures" class="dashboard-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">⚡ Smart Fixture Generator</h1>
+            <p style="color: var(--text-muted); font-size: 13px;">Automated deterministic knockout bracket & round-robin generation with venue conflict checking.</p>
+          </div>
+
+          <div class="tactical-card" style="margin-bottom: 24px;">
+            <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 280px;">
+                <label style="display: block; font-size: 12px; margin-bottom: 6px; color: var(--text-muted);">Select Approved Tournament:</label>
+                <select class="form-control" id="fixture-event-select" onchange="orgApp.previewApprovedTeams()">
+                  <!-- Injected via JS -->
+                </select>
+              </div>
+              <button class="btn btn-primary" onclick="orgApp.generateTournamentFixtures()">⚡ Generate Fixtures Now</button>
+            </div>
+          </div>
+
+          <div id="fixture-results-card" class="tactical-card" style="display: none;">
+            <div class="tactical-card-header">
+              <h3 id="fixture-result-title">Generated Fixtures</h3>
+              <div id="fixture-conflict-badge"></div>
+            </div>
+            <div class="table-wrap">
+              <table class="tactical-table">
+                <thead>
+                  <tr>
+                    <th>Match #</th>
+                    <th>Round</th>
+                    <th>Matchup</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Venue</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="fixture-table-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+              <button class="btn btn-primary" onclick="orgApp.publishFixtures()">Publish Fixtures to Live Tournament →</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. LIVE SCORE CONSOLE PAGE -->
+        <section id="page-score-console" class="dashboard-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">🎯 Live Match Score Console</h1>
+            <p style="color: var(--text-muted); font-size: 13px;">Manage in-play match scores. All actions update the shared database and broadcast telemetry to players.</p>
+          </div>
+
+          <div class="tactical-card">
+            <div class="form-group">
+              <label>Select Active Match:</label>
+              <select class="form-control" id="score-match-select" onchange="orgApp.loadMatchScoreConsole()">
+                <!-- Injected via JS -->
+              </select>
+            </div>
+
+            <div id="score-console-body">
+              <!-- Dynamically populated for Cricket or Football -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. VENUES PAGE -->
+        <section id="page-venues" class="dashboard-page">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+              <h1 style="font-size: 28px; margin-bottom: 4px;">🏟️ Ground & Venue Management</h1>
+              <p style="color: var(--text-muted); font-size: 13px;">Register and manage grounds, pitches, and facilities for tournaments.</p>
+            </div>
+            <button class="btn btn-primary" onclick="orgApp.openAddVenueModal()">+ Add New Venue</button>
+          </div>
+
+          <div class="tactical-card">
+            <div class="table-wrap">
+              <table class="tactical-table">
+                <thead>
+                  <tr>
+                    <th>Venue Name</th>
+                    <th>Address & City</th>
+                    <th>Surface Type</th>
+                    <th>Capacity</th>
+                    <th>Amenities</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="venues-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. ANNOUNCEMENTS PAGE -->
+        <section id="page-announcements" class="dashboard-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">📢 Broadcast Tournament Announcements</h1>
+            <p style="color: var(--text-muted); font-size: 13px;">Publish schedule alerts, pitch reports, or weather notices to participating teams.</p>
+          </div>
+
+          <div class="tactical-card" style="margin-bottom: 24px;">
+            <form onsubmit="orgApp.handleBroadcast(event)">
+              <div class="form-group">
+                <label>Announcement Headline *</label>
+                <input type="text" class="form-control" id="ann-title" placeholder="e.g. Toss delayed by 15 mins due to drizzle" required>
+              </div>
+              <div class="form-group">
+                <label>Message Details *</label>
+                <textarea class="form-control" id="ann-content" rows="3" placeholder="Provide full details..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Broadcast Announcement →</button>
+            </form>
+          </div>
+
+          <div class="tactical-card">
+            <h3>Recent Broadcasts</h3>
+            <div id="recent-announcements-list" style="margin-top: 16px;">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="./js/organizerApp.js"></script>
+</body>
+</html>

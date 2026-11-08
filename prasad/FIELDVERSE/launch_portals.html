@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIELDVERSE – Portal Launcher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0D1117;
+      --card-bg: #161B22;
+      --border: #30363D;
+      --text: #F0F6FC;
+      --text-dim: #8B949E;
+      --admin-color: #58A6FF;
+      --org-color: #2EA043;
+      --player-color: #E3B341;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(46, 160, 67, 0.15);
+      border: 1px solid rgba(46, 160, 67, 0.4);
+      color: #3FB950;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+    h1 span { color: #2EA043; }
+    p.subtitle {
+      color: var(--text-dim);
+      font-size: 16px;
+      max-width: 600px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      width: 100%;
+      max-width: 1040px;
+    }
+    .portal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .portal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .portal-card.admin:hover { border-color: var(--admin-color); }
+    .portal-card.org:hover { border-color: var(--org-color); }
+    .portal-card.player:hover { border-color: var(--player-color); }
+    
+    .icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+    .portal-card h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+    .portal-card p {
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-admin { background: #1F6FEB; color: #FFF; }
+    .btn-admin:hover { background: #388BFD; }
+    .btn-org { background: #238636; color: #FFF; }
+    .btn-org:hover { background: #2EA043; }
+    .btn-player { background: #D29922; color: #000; }
+    .btn-player:hover { background: #E3B341; }
+
+    .meta {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">● Supabase PostgreSQL Live</div>
+    <h1>FIELD<span>VERSE</span> Portal Hub</h1>
+    <p class="subtitle">Select any portal below to launch and test. All three portals run independently and communicate via shared Supabase database.</p>
+  </div>
+
+  <div class="grid">
+    <!-- 1. Admin Portal -->
+    <a href="./admin/index.html" class="portal-card admin">
+      <div class="icon">🏛️</div>
+      <h2>Executive Admin Portal</h2>
+      <p>Manage platform governance, approve incoming tournaments, verify organizers, configure sports rules, and monitor system audit logs.</p>
+      <div class="btn btn-admin">Launch Admin Portal →</div>
+      <div class="meta">Root: <code>admin/index.html</code></div>
+    </a>
+
+    <!-- 2. Organizer Command -->
+    <a href="./organizer/index.html" class="portal-card org">
+      <div class="icon">⚡</div>
+      <h2>Organizer Command Centre</h2>
+      <p>Host tournaments, review squad registrations, run the conflict-free Smart Fixture Engine, and operate the live ball-by-ball score console.</p>
+      <div class="btn btn-org">Launch Organizer Command →</div>
+      <div class="meta">Root: <code>organizer/index.html</code></div>
+    </a>
+
+    <!-- 3. Player Universe -->
+    <a href="./player/index.html" class="portal-card player">
+      <div class="icon">🏏</div>
+      <h2>Player Website & Arena</h2>
+      <p>Discover open tournaments, register teams and rosters, follow live match scores in real time, and climb regional leaderboard rankings.</p>
+      <div class="btn btn-player">Launch Player Universe →</div>
+      <div class="meta">Root: <code>player/index.html</code></div>
+    </a>
+  </div>
+
+</body>
+</html>

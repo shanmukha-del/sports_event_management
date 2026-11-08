@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIELDVERSE Player – The Ultimate Sports Event Universe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/player.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.__FIELDVERSE_CONFIG__ = {
+      url: "https://ijqsiqmcwpvczqnbccur.supabase.co",
+      anonKey: "sb_publishable_yNsjheFfmlkPR9jm0T33vA_2H3DRDr7"
+    };
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- App Header -->
+    <header class="app-header">
+      <a href="#" class="brand-container" onclick="app.showView('home')">
+        <div class="brand-badge">F</div>
+        <div class="brand-name">FIELD<span>VERSE</span></div>
+      </a>
+      
+      <nav class="main-nav">
+        <a id="nav-home" class="active" onclick="app.showView('home')">Home</a>
+        <a id="nav-discover" onclick="app.showView('discover')">Discover Events</a>
+        <a id="nav-live" onclick="app.showView('live')">Live Center</a>
+        <a id="nav-leaderboard" onclick="app.showView('leaderboard')">Leaderboard</a>
+        <a id="nav-arena" onclick="app.showView('arena')">My Arena</a>
+      </nav>
+
+      <div class="header-actions">
+        <div id="auth-buttons">
+          <button class="btn btn-outline btn-sm" onclick="app.openAuthModal('login')">Sign In</button>
+          <button class="btn btn-primary btn-sm" onclick="app.openAuthModal('signup')">Create Account</button>
+        </div>
+        <div id="user-profile-menu" style="display: none; align-items: center; gap: 10px;">
+          <span id="user-display-name" style="font-size: 13px; font-weight: 600;">Player</span>
+          <button class="btn btn-outline btn-sm" onclick="app.showView('profile')">Profile</button>
+          <button class="btn btn-outline btn-sm" style="color: var(--danger-rose);" onclick="app.logout()">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Live Ticker Bar -->
+    <div class="live-ticker-strip">
+      <div class="ticker-pulse-tag">
+        <div class="pulse-dot"></div> LIVE ARENA
+      </div>
+      <div class="ticker-items" id="ticker-content">
+        <!-- Dynamically injected from live matches -->
+      </div>
+    </div>
+
+    <!-- Main Content Panels -->
+    <main class="app-main">
+
+      <!-- 1. HOME VIEW -->
+      <section id="view-home" class="view-panel active-panel">
+        <div class="hero-card">
+          <div class="hero-content">
+            <div class="subtitle">Grassroots & Corporate Sports Ecosystem</div>
+            <h1>Turn Local Grounds Into <span>Championship Arenas</span>.</h1>
+            <p>Discover verified open tournaments, register your squads in seconds, track ball-by-ball live stats, and climb the platform leaderboards.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary btn-lg" onclick="app.showView('discover')">Discover Tournaments →</button>
+              <button class="btn btn-secondary btn-lg" onclick="app.openRegistrationModal()">Register a Squad</button>
+            </div>
+          </div>
+          <div class="hero-stats-strip">
+            <div class="stat-item">
+              <div class="stat-metric" id="metric-events">12+</div>
+              <div class="stat-label">Active Tournaments</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-metric" id="metric-venues">8+</div>
+              <div class="stat-label">Verified Grounds</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-metric" id="metric-teams">24+</div>
+              <div class="stat-label">Registered Squads</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+          <div>
+            <span style="color: var(--secondary); font-size: 12px; font-weight: 700; text-transform: uppercase;">PREMIER CHAMPIONSHIPS</span>
+            <h2 style="font-size: 28px;">Featured Tournaments</h2>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="app.showView('discover')">View All Tournaments →</button>
+        </div>
+
+        <div class="events-grid" id="home-featured-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 2. DISCOVER EVENTS VIEW -->
+      <section id="view-discover" class="view-panel">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 32px; margin-bottom: 6px;">Discover Tournaments</h1>
+          <p style="color: var(--text-muted); font-size: 14px;">Browse upcoming cricket and football championships across verified sports venues.</p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar-container">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="event-search" placeholder="Search by tournament name, ground, or city..." oninput="app.filterEvents()">
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" id="filter-sport" onchange="app.filterEvents()">
+              <option value="all">All Sports</option>
+              <option value="cricket">Cricket</option>
+              <option value="football">Football</option>
+            </select>
+            <select class="filter-select" id="filter-format" onchange="app.filterEvents()">
+              <option value="all">All Formats</option>
+              <option value="knockout">Knockout</option>
+              <option value="league">League / Round-Robin</option>
+            </select>
+            <select class="filter-select" id="filter-fee" onchange="app.filterEvents()">
+              <option value="all">All Entry Fees</option>
+              <option value="free">Free Entry</option>
+              <option value="paid">Paid Entry</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="events-grid" id="discover-events-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 3. EVENT DETAILS VIEW -->
+      <section id="view-event-details" class="view-panel">
+        <button class="btn btn-outline btn-sm" style="margin-bottom: 20px;" onclick="app.showView('discover')">← Back to All Tournaments</button>
+        <div id="event-details-content">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- 4. LIVE MATCH CENTRE VIEW -->
+      <section id="view-live" class="view-panel">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 32px; margin-bottom: 6px;">Live Match Centre</h1>
+          <p style="color: var(--text-muted); font-size: 14px;">Real-time match scores, over-by-over telemetry, and in-play updates.</p>
+        </div>
+
+        <div id="live-matches-container">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 5. LEADERBOARD VIEW -->
+      <section id="view-leaderboard" class="view-panel">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 32px; margin-bottom: 6px;">Tournament Standings</h1>
+          <p style="color: var(--text-muted); font-size: 14px;">Official rankings, points tally, and recent match performance.</p>
+        </div>
+
+        <div class="filter-bar-container">
+          <label style="font-size: 13px; font-weight: 600;">Select Tournament:</label>
+          <select class="filter-select" id="leaderboard-event-select" onchange="app.renderLeaderboard()">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Team</th>
+                <th>Played</th>
+                <th>Won</th>
+                <th>Lost</th>
+                <th>Tied</th>
+                <th>Points</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 6. MY ARENA (PLAYER DASHBOARD) -->
+      <section id="view-arena" class="view-panel">
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h1 style="font-size: 32px; margin-bottom: 6px;">My Arena</h1>
+            <p style="color: var(--text-muted); font-size: 14px;">Track your squads, tournament registrations, and match schedules.</p>
+          </div>
+          <button class="btn btn-primary" onclick="app.openRegistrationModal()">+ Register New Squad</button>
+        </div>
+
+        <h3 style="margin-bottom: 16px;">My Registered Tournaments</h3>
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tournament</th>
+                <th>Squad Name</th>
+                <th>Format</th>
+                <th>Dates</th>
+                <th>Approval Status</th>
+                <th>Payment</th>
+              </tr>
+            </thead>
+            <tbody id="arena-registrations-table">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top: 36px; margin-bottom: 16px;">Upcoming Matches for My Squads</h3>
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tournament</th>
+                <th>Fixture</th>
+                <th>Round</th>
+                <th>Venue & Pitch</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="arena-matches-table">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 7. PLAYER PROFILE VIEW -->
+      <section id="view-profile" class="view-panel">
+        <div style="max-width: 640px; margin: 0 auto; background: #FFF; padding: 32px; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm);">
+          <h2 style="font-size: 26px; margin-bottom: 20px;">Player Profile</h2>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" class="form-control" id="profile-name">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" class="form-control" id="profile-email" disabled>
+          </div>
+          <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="text" class="form-control" id="profile-phone">
+          </div>
+          <div class="form-group">
+            <label>Sports Bio / Role</label>
+            <textarea class="form-control" id="profile-bio" rows="3" placeholder="e.g. Top-order batsman & medium pacer"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="app.saveProfile()">Save Changes</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div>
+          <div class="brand-name" style="color: #FFF; font-size: 22px;">FIELD<span>VERSE</span></div>
+          <p style="color: #94A3B8; font-size: 13px; margin-top: 6px;">The Ultimate Sports Event Universe • Player Portal</p>
+        </div>
+        <div class="footer-meta">
+          <span>Connected to Supabase PostgreSQL • Real-Time Engine Active</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Team Registration Modal -->
+    <div id="modal-registration" class="modal-backdrop">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Register Squad for Tournament</h3>
+          <button class="modal-close" onclick="app.closeModal('modal-registration')">✕</button>
+        </div>
+        <div class="modal-body">
+          <form id="team-reg-form" onsubmit="app.handleRegistrationSubmit(event)">
+            <div class="form-group">
+              <label>Select Tournament *</label>
+              <select class="form-control" id="reg-event-select" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Squad / Team Name *</label>
+              <input type="text" class="form-control" id="reg-team-name" placeholder="e.g. Koramangala Tigers CC" required>
+            </div>
+            <div class="form-group">
+              <label>Captain Name *</label>
+              <input type="text" class="form-control" id="reg-captain-name" placeholder="Captain Full Name" required>
+            </div>
+            <div class="form-group">
+              <label>Captain Phone (WhatsApp) *</label>
+              <input type="tel" class="form-control" id="reg-captain-phone" placeholder="+91 98765 43210" required>
+            </div>
+            <div class="form-group">
+              <label>Squad Roster (Enter comma-separated player names) *</label>
+              <textarea class="form-control" id="reg-roster" rows="3" placeholder="Player 1, Player 2, Player 3, Player 4, Player 5..." required></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+              <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-registration')">Cancel</button>
+              <button type="submit" class="btn btn-primary">Submit Registration →</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="modal-auth" class="modal-backdrop">
+      <div class="modal-card" style="width: 440px;">
+        <div class="modal-header">
+          <h3 id="auth-modal-title">Sign In to FIELDVERSE</h3>
+          <button class="modal-close" onclick="app.closeModal('modal-auth')">✕</button>
+        </div>
+        <div class="modal-body">
+          <form id="auth-form" onsubmit="app.handleAuthSubmit(event)">
+            <div class="form-group" id="auth-fullname-group" style="display: none;">
+              <label>Full Name *</label>
+              <input type="text" class="form-control" id="auth-fullname">
+            </div>
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" class="form-control" id="auth-email" required>
+            </div>
+            <div class="form-group">
+              <label>Password *</label>
+              <input type="password" class="form-control" id="auth-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;" id="auth-submit-btn">Sign In</button>
+            <div style="text-align: center; margin-top: 16px; font-size: 13px;">
+              <span id="auth-toggle-text">Don't have an account?</span>
+              <a href="#" style="color: var(--primary); font-weight: 600;" id="auth-toggle-btn" onclick="app.toggleAuthMode()">Create Player Account</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="./js/playerApp.js"></script>
+</body>
+</html>

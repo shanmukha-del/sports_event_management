@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIELDVERSE Admin – Executive Governance Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.__FIELDVERSE_CONFIG__ = {
+      url: "https://ijqsiqmcwpvczqnbccur.supabase.co",
+      anonKey: "sb_publishable_yNsjheFfmlkPR9jm0T33vA_2H3DRDr7"
+    };
+  </script>
+</head>
+<body>
+  <div class="admin-shell">
+    
+    <!-- Executive Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <a href="#" class="brand-badge" onclick="adminApp.showPage('dashboard')">
+          <div class="badge-icon">🏛️</div>
+          <div class="brand-text">FIELD<span>VERSE</span></div>
+        </a>
+        <div style="font-size: 11px; color: var(--admin-text-dim); text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px;">
+          Executive Governance
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="menu-label">Overview</div>
+        <a id="nav-dashboard" class="active" onclick="adminApp.showPage('dashboard')">📈 Executive Dashboard</a>
+        
+        <div class="menu-label">Verifications & Approvals</div>
+        <a id="nav-organizers" onclick="adminApp.showPage('organizers')">
+          🏢 Organizer Approvals 
+          <span id="badge-pending-orgs" class="badge badge-pending" style="margin-left: auto;">0</span>
+        </a>
+        <a id="nav-events" onclick="adminApp.showPage('events')">
+          🏆 Event Approvals 
+          <span id="badge-pending-events" class="badge badge-pending" style="margin-left: auto;">0</span>
+        </a>
+
+        <div class="menu-label">Ecosystem Management</div>
+        <a id="nav-squads" onclick="adminApp.showPage('squads')">🛡️ Registered Squads</a>
+        <a id="nav-players" onclick="adminApp.showPage('players')">👥 Player Directory</a>
+        <a id="nav-sports" onclick="adminApp.showPage('sports')">⚽ Sports & Rules</a>
+        <a id="nav-venues" onclick="adminApp.showPage('venues')">🏟️ Venue Approvals</a>
+        <a id="nav-audit" onclick="adminApp.showPage('audit')">📜 Audit Trail</a>
+        <a id="nav-settings" onclick="adminApp.showPage('settings')">⚙️ Platform Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div style="margin-bottom: 8px;">
+          <strong id="admin-user-name">Vikramaditya Rao</strong>
+          <span class="badge badge-approved" style="display: block; width: fit-content; margin-top: 4px;">COMMISSIONER</span>
+        </div>
+        <button class="btn btn-subtle" style="width: 100%; font-size: 11px;" onclick="adminApp.logout()">Secure Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="admin-content-wrap">
+      
+      <!-- Top Executive Bar -->
+      <header class="executive-bar">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--admin-success);">
+          ● SECURE NODE ACTIVE • SUPABASE GOVERNANCE SYNC
+        </div>
+        <div>
+          <button class="btn btn-subtle btn-sm" onclick="adminApp.refreshData()">Force Sync Telemetry</button>
+        </div>
+      </header>
+
+      <!-- Main Pages Area -->
+      <main>
+
+        <!-- 1. EXECUTIVE DASHBOARD -->
+        <section id="page-dashboard" class="admin-page active-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Executive System Health</h1>
+            <p style="color: var(--admin-text-muted); font-size: 13px;">High-level governance telemetry across the sports network.</p>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="exec-kpi-grid">
+            <div class="exec-kpi">
+              <div class="kpi-label">Registered Athletes</div>
+              <div class="kpi-val" id="kpi-players">128</div>
+            </div>
+            <div class="exec-kpi">
+              <div class="kpi-label">Pending Organizer Approvals</div>
+              <div class="kpi-val" id="kpi-pending-orgs">2</div>
+            </div>
+            <div class="exec-kpi">
+              <div class="kpi-label">Events Awaiting Approval</div>
+              <div class="kpi-val" id="kpi-pending-events">1</div>
+            </div>
+            <div class="exec-kpi">
+              <div class="kpi-label">Active Approved Tournaments</div>
+              <div class="kpi-val" id="kpi-published-events">4</div>
+            </div>
+          </div>
+
+          <!-- Action Queues -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; margin-top: 24px;">
+            <div class="exec-card">
+              <h3 style="margin-bottom: 16px;">Tournaments Pending Authorization</h3>
+              <div id="dash-pending-events-list">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+            <div class="exec-card">
+              <h3 style="margin-bottom: 16px;">Organizer Verification Queue</h3>
+              <div id="dash-pending-orgs-list">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. ORGANIZER VERIFICATIONS -->
+        <section id="page-organizers" class="admin-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Organizer Identity & License Verifications</h1>
+            <p style="color: var(--admin-text-muted); font-size: 13px;">Review applicant sports academies, corporate entities, and tournament directors.</p>
+          </div>
+
+          <div class="exec-card">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Organization Name</th>
+                    <th>Representative</th>
+                    <th>Email Contact</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Review Action</th>
+                  </tr>
+                </thead>
+                <tbody id="organizers-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. EVENT APPROVALS -->
+        <section id="page-events" class="admin-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Tournament Sanctioning & Event Approvals</h1>
+            <p style="color: var(--admin-text-muted); font-size: 13px;">Authorise public visibility of grassroots and corporate sports tournaments.</p>
+          </div>
+
+          <div class="exec-card">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Tournament Title</th>
+                    <th>Sport</th>
+                    <th>Organizer</th>
+                    <th>Dates</th>
+                    <th>Entry Fee</th>
+                    <th>Status</th>
+                    <th>Approval Action</th>
+                  </tr>
+                </thead>
+                <tbody id="events-approval-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. REGISTERED SQUADS & TEAMS -->
+        <section id="page-squads" class="admin-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Registered Tournament Squads</h1>
+            <p style="color: var(--admin-text-muted); font-size: 13px;">Platform-wide view of all squads and teams registered across all tournaments.</p>
+          </div>
+
+          <div class="exec-card">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Squad / Team Name</th>
+                    <th>Tournament</th>
+                    <th>Captain Details</th>
+                    <th>City</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Admin Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-squads-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. PLAYER DIRECTORY -->
+        <section id="page-players" class="admin-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Athlete & Player Ecosystem Directory</h1>
+            <p style="color: var(--admin-text-muted); font-size: 13px;">Overview of registered players and associated squads.</p>
+          </div>
+
+          <div class="exec-card">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Athlete Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Affiliated Squads</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="players-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. SPORTS & RULES CONFIGURATION -->
+        <section id="page-sports" class="admin-page">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+              <h1 style="font-size: 28px; margin-bottom: 4px;">Sports & Tournament Configurations</h1>
+              <p style="color: var(--admin-text-muted); font-size: 13px;">Manage officially supported sports, squad sizes, and sport rules.</p>
+            </div>
+            <button class="btn btn-primary" onclick="adminApp.openAddSportModal()">+ Add New Sport</button>
+          </div>
+
+          <div class="exec-card">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Sport</th>
+                    <th>Slug</th>
+                    <th>Min Squad</th>
+                    <th>Max Squad</th>
+                    <th>Rules Config</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="sports-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. VENUE OVERSIGHT -->
+        <section id="page-venues" class="admin-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Venue & Ground Verification</h1>
+            <p style="color: var(--admin-text-muted); font-size: 13px;">Review grounds and amenities available across the network.</p>
+          </div>
+
+          <div class="exec-card">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Venue Name</th>
+                    <th>Location</th>
+                    <th>Surface</th>
+                    <th>Capacity</th>
+                    <th>Amenities</th>
+                    <th>Verification</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-venues-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. AUDIT LOGS -->
+        <section id="page-audit" class="admin-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Immutable Governance Audit Trail</h1>
+            <p style="color: var(--admin-text-muted); font-size: 13px;">Timestamped log of critical executive actions and state mutations.</p>
+          </div>
+
+          <div class="exec-card">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Action Type</th>
+                    <th>Principal Actor</th>
+                    <th>Target Entity</th>
+                    <th>Payload Details</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. PLATFORM SETTINGS -->
+        <section id="page-settings" class="admin-page">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 28px; margin-bottom: 4px;">Platform Governance Settings</h1>
+            <p style="color: var(--admin-text-muted); font-size: 13px;">Supabase backend connection settings and system configuration.</p>
+          </div>
+
+          <div class="exec-card" style="max-width: 600px;">
+            <h3 style="margin-bottom: 16px;">Supabase Project Configuration</h3>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 12px; margin-bottom: 6px; color: var(--admin-text-muted);">SUPABASE URL</label>
+              <input type="text" id="cfg-supabase-url" style="width: 100%; padding: 10px; background: var(--admin-elevate); border: 1px solid var(--admin-border); color: #FFF; border-radius: 6px;" placeholder="https://xyzcompany.supabase.co">
+            </div>
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; font-size: 12px; margin-bottom: 6px; color: var(--admin-text-muted);">SUPABASE ANON / PUBLIC KEY</label>
+              <input type="text" id="cfg-supabase-key" style="width: 100%; padding: 10px; background: var(--admin-elevate); border: 1px solid var(--admin-border); color: #FFF; border-radius: 6px;" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+            </div>
+            <button class="btn btn-primary" onclick="adminApp.saveSupabaseConfig()">Save Credentials</button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="./js/adminApp.js"></script>
+</body>
+</html>

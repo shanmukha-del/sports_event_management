@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIELDVERSE – The Ultimate Sports Event Universe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root {
+      --clay-brown: #C6A47B;
+      --clay-hover: #b39169;
+      --warm-beige: #E8D8BC;
+      --olive-green: #78916A;
+      --dark-green: #303C32;
+      --forest-dark: #1A221C;
+      --warm-offwhite: #F5F0E6;
+      --white: #FFFFFF;
+      --text-muted: #6B7B6E;
+      --live-green: #10B981;
+      --shadow-soft: 0 10px 30px -4px rgba(48, 60, 50, 0.08);
+      --shadow-hover: 0 16px 36px -6px rgba(48, 60, 50, 0.16);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--warm-offwhite);
+      color: var(--dark-green);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, .brand-font {
+      font-family: 'Outfit', sans-serif;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Top Nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245, 240, 230, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(48, 60, 50, 0.08);
+      padding: 16px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--dark-green);
+    }
+    .logo-emblem {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--dark-green);
+      border: 3px solid var(--clay-brown);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--warm-beige);
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .brand-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .brand-title span { color: var(--clay-brown); }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--dark-green);
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    nav a:hover, nav a.active {
+      color: var(--clay-brown);
+    }
+    .badge-3d {
+      background: var(--olive-green);
+      color: #FFF;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--clay-brown);
+      color: var(--white);
+      box-shadow: 0 4px 14px rgba(198, 164, 123, 0.4);
+    }
+    .btn-primary:hover {
+      background: var(--clay-hover);
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--olive-green);
+      color: var(--dark-green);
+    }
+    .btn-outline:hover {
+      background: rgba(120, 145, 106, 0.1);
+    }
+
+    /* Live Ticker */
+    .ticker-bar {
+      background: var(--forest-dark);
+      color: var(--warm-offwhite);
+      padding: 12px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 2px solid var(--clay-brown);
+    }
+    .ticker-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--live-green);
+      white-space: nowrap;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--live-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--live-green);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+    .ticker-scroll {
+      display: flex;
+      gap: 32px;
+      overflow-x: auto;
+      font-size: 13px;
+    }
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+    }
+    .ticker-item strong { color: var(--clay-brown); }
+
+    /* Hero Section */
+    .hero {
+      padding: 60px 48px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: 48px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .sport-pill-selector {
+      display: inline-flex;
+      background: var(--warm-beige);
+      padding: 4px;
+      border-radius: 30px;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+    .sport-pill {
+      padding: 8px 18px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--dark-green);
+      transition: all 0.2s;
+    }
+    .sport-pill.active {
+      background: var(--dark-green);
+      color: var(--warm-offwhite);
+    }
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      color: var(--dark-green);
+    }
+    .hero h1 span {
+      color: var(--clay-brown);
+      text-decoration: underline;
+      text-decoration-color: var(--olive-green);
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      max-width: 540px;
+      line-height: 1.6;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .trust-stats {
+      display: flex;
+      gap: 32px;
+      border-top: 1px solid rgba(48, 60, 50, 0.1);
+      padding-top: 24px;
+    }
+    .stat-item h4 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--dark-green);
+    }
+    .stat-item p {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    /* 3D Viewport Card */
+    .viewport-3d-card {
+      background: var(--forest-dark);
+      border-radius: 20px;
+      height: 500px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -10px rgba(26, 34, 28, 0.35);
+      border: 3px solid var(--clay-brown);
+    }
+    #three-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .canvas-overlay {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+    .canvas-tag {
+      background: rgba(48, 60, 50, 0.85);
+      backdrop-filter: blur(8px);
+      color: var(--warm-beige);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(198, 164, 123, 0.3);
+    }
+    .canvas-hint {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(26, 34, 28, 0.85);
+      color: var(--warm-offwhite);
+      font-size: 11px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      pointer-events: none;
+      letter-spacing: 0.5px;
+    }
+
+    /* GroundPulse Section */
+    .groundpulse-section {
+      background: var(--dark-green);
+      color: var(--warm-offwhite);
+      padding: 80px 48px;
+      margin-top: 40px;
+    }
+    .gp-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .gp-content h2 {
+      font-size: 44px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .gp-content h2 span { color: var(--clay-brown); }
+    .gp-zones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 28px 0;
+    }
+    .zone-chip {
+      background: rgba(245, 240, 230, 0.08);
+      border: 1px solid rgba(232, 216, 188, 0.2);
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .zone-chip:hover, .zone-chip.active {
+      background: var(--clay-brown);
+      color: var(--white);
+      border-color: var(--clay-brown);
+    }
+    .zone-chip h5 { font-size: 14px; margin-bottom: 2px; }
+    .zone-chip p { font-size: 11px; opacity: 0.8; }
+
+    /* Interactive Ground Viewport */
+    .gp-viewport {
+      background: #141c16;
+      border-radius: 16px;
+      height: 460px;
+      position: relative;
+      border: 2px solid var(--olive-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .pitch-graphic {
+      width: 320px;
+      height: 220px;
+      border: 2px dashed rgba(198, 164, 123, 0.6);
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pitch-strip {
+      width: 120px;
+      height: 40px;
+      background: var(--clay-brown);
+      border-radius: 4px;
+      box-shadow: 0 0 20px rgba(198, 164, 123, 0.5);
+    }
+    .hotspot {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: var(--live-green);
+      border: 3px solid #FFF;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 14px var(--live-green);
+      transition: transform 0.2s;
+      animation: pulse 2s infinite;
+    }
+    .hotspot:hover { transform: scale(1.3); }
+    .hotspot-label {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--forest-dark);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      white-space: nowrap;
+      color: #FFF;
+      pointer-events: none;
+    }
+
+    /* Featured Tournaments */
+    .tournaments-section {
+      max-width: 1400px;
+      margin: 80px auto;
+      padding: 0 48px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 36px;
+    }
+    .section-header h2 { font-size: 36px; font-weight: 800; }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .event-card {
+      background: var(--white);
+      border-radius: 16px;
+      border: 1px solid rgba(48, 60, 50, 0.08);
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.3s;
+    }
+    .event-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+    .card-banner {
+      height: 180px;
+      background: linear-gradient(135deg, var(--forest-dark), var(--dark-green));
+      position: relative;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .banner-tags {
+      display: flex;
+      justify-content: space-between;
+    }
+    .tag-sport {
+      background: var(--dark-green);
+      color: #FFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .tag-status {
+      background: var(--warm-beige);
+      color: var(--dark-green);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .card-body {
+      padding: 24px;
+    }
+    .card-date {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--olive-green);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .card-venue {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(48, 60, 50, 0.06);
+      padding-top: 16px;
+      font-size: 13px;
+    }
+    .card-meta strong { color: var(--clay-brown); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(26, 34, 28, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-box {
+      background: var(--white);
+      border-radius: 20px;
+      width: 600px;
+      max-width: 90%;
+      padding: 36px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .modal-header h3 { font-size: 24px; font-weight: 800; }
+    .close-btn {
+      background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #D5C7B0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-group input:focus {
+      border-color: var(--clay-brown);
+      box-shadow: 0 0 0 3px rgba(198, 164, 123, 0.2);
+    }
+
+    footer {
+      background: var(--forest-dark);
+      color: var(--warm-offwhite);
+      padding: 60px 48px;
+      text-align: center;
+      border-top: 4px solid var(--clay-brown);
+    }
+    footer p { color: var(--warm-beige); font-size: 13px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <a href="#" class="brand-logo">
+      <div class="logo-emblem">F</div>
+      <div class="brand-title">FIELD<span>VERSE</span></div>
+    </a>
+    <nav>
+      <a href="#" class="active">Home</a>
+      <a href="#discover">Discover Events</a>
+      <a href="#groundpulse">GroundPulse™ <span class="badge-3d">3D</span></a>
+      <a href="#arena">My Arena</a>
+      <a href="#leaderboard">Leaderboard</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-primary" onclick="openRegistrationModal()">Register Team</button>
+    </div>
+  </header>
+
+  <!-- Live Match Ticker -->
+  <div class="ticker-bar">
+    <div class="ticker-label">
+      <div class="pulse-dot"></div> LIVE ARENA
+    </div>
+    <div class="ticker-scroll">
+      <div class="ticker-item">
+        🏏 <strong>Monsoon Cup Semis:</strong> Royal Strikers 148/4 (17.2 ov) vs Deccan Tigers • Need 24 off 16 balls
+      </div>
+      <div class="ticker-item">
+        ⚽ <strong>City Super League:</strong> Spartans FC 2 - 1 United FC (82' 2nd Half)
+      </div>
+      <div class="ticker-item">
+        🏏 <strong>Corporate Knockout:</strong> Tech Titans 182/6 (20 ov) won by 14 runs
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="sport-pill-selector">
+        <button class="sport-pill active" onclick="switchSport('cricket')">🏏 Cricket</button>
+        <button class="sport-pill" onclick="switchSport('football')">⚽ Football</button>
+      </div>
+      <h1>Turn Local Grounds Into <span>Legendary Arenas</span>.</h1>
+      <p>Discover verified outdoor tournaments, register squads in seconds, track ball-by-ball live stats, and explore real sporting grounds in interactive 3D.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary" style="padding: 14px 28px; font-size: 16px;" onclick="openRegistrationModal()">Explore Tournaments →</button>
+        <a href="#groundpulse" class="btn btn-outline" style="padding: 14px 28px; font-size: 16px;">Launch GroundPulse™ 3D</a>
+      </div>
+      <div class="trust-stats">
+        <div class="stat-item">
+          <h4>120+</h4>
+          <p>Verified Tournaments</p>
+        </div>
+        <div class="stat-item">
+          <h4>48+</h4>
+          <p>Real Grounds</p>
+        </div>
+        <div class="stat-item">
+          <h4>100%</h4>
+          <p>Real-Time Telemetry</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D Interactive Viewport -->
+    <div class="viewport-3d-card">
+      <div class="canvas-overlay">
+        <span class="canvas-tag">✦ THREE.JS PROCEDURAL 3D</span>
+        <span class="canvas-tag">INTERACTIVE</span>
+      </div>
+      <canvas id="three-canvas"></canvas>
+      <div class="canvas-hint">Drag mouse to orbit 360° • Scroll to zoom</div>
+    </div>
+  </section>
+
+  <!-- GroundPulse 3D Section -->
+  <section id="groundpulse" class="groundpulse-section">
+    <div class="gp-container">
+      <div class="gp-content">
+        <span style="color: var(--clay-brown); font-weight: 700; font-size: 12px; letter-spacing: 1px;">SIGNATURE EXPERIENCE</span>
+        <h2>GroundPulse™ <span>3D Venue Explorer</span></h2>
+        <p>Explore actual match grounds before game day. Inspect the pitch conditions, dugout seating, spectator stands, entry gates, and hydration points in full 3D.</p>
+        <div class="gp-zones">
+          <div class="zone-chip active" onclick="highlightZone('pitch')">
+            <h5>Zone A: The Pitch</h5>
+            <p>Hard clay • 22 yards</p>
+          </div>
+          <div class="zone-chip" onclick="highlightZone('pavilion')">
+            <h5>Zone B: Team Dugouts</h5>
+            <p>Player pavilion & shade</p>
+          </div>
+          <div class="zone-chip" onclick="highlightZone('gate')">
+            <h5>Zone C: Entry Gate 2</h5>
+            <p>Spectator & parking check</p>
+          </div>
+          <div class="zone-chip" onclick="highlightZone('medical')">
+            <h5>Zone D: First Aid Station</h5>
+            <p>Emergency medical kit</p>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="alert('Full screen GroundPulse 3D Explorer engaged!')">Launch Full-Screen GroundPulse ↗</button>
+      </div>
+
+      <!-- 3D Tactical Ground View -->
+      <div class="gp-viewport">
+        <div class="pitch-graphic">
+          <div class="pitch-strip"></div>
+          <div class="hotspot" style="top: 20px; left: 140px;" title="Gate 1 Entry">
+            <div class="hotspot-label">Entry Gate</div>
+          </div>
+          <div class="hotspot" style="bottom: 20px; left: 140px;" title="Player Dugout">
+            <div class="hotspot-label">Team Dugout</div>
+          </div>
+          <div class="hotspot" style="top: 90px; right: 20px;" title="Medical Unit">
+            <div class="hotspot-label">First Aid</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Tournaments Grid -->
+  <section id="discover" class="tournaments-section">
+    <div class="section-header">
+      <div>
+        <span style="color: var(--olive-green); font-weight: 700; font-size: 12px; letter-spacing: 1px;">COMPETE & WIN</span>
+        <h2>Featured Tournaments</h2>
+      </div>
+      <a href="#" class="btn btn-outline">View All 42 Tournaments →</a>
+    </div>
+
+    <div class="card-grid">
+      <!-- Card 1 -->
+      <div class="event-card">
+        <div class="card-banner">
+          <div class="banner-tags">
+            <span class="tag-sport">CRICKET</span>
+            <span class="tag-status">4 SLOTS LEFT</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-date">SAT, 24 NOV • KNOCKOUT</div>
+          <h3 class="card-title">Apex Monsoon Premier Championship 2026</h3>
+          <div class="card-venue">📍 Apex International Turf, Sector 4</div>
+          <div class="card-meta">
+            <div>Fee: <strong>₹2,500</strong></div>
+            <div>Prize: <strong>₹50,000</strong></div>
+            <div>Teams: <strong>12/16</strong></div>
+          </div>
+          <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="openRegistrationModal()">Register Squad</button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="event-card">
+        <div class="card-banner" style="background: linear-gradient(135deg, #273B2E, #3D5A45);">
+          <div class="banner-tags">
+            <span class="tag-sport">FOOTBALL</span>
+            <span class="tag-status">2 SLOTS LEFT</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-date">SUN, 25 NOV • LEAGUE</div>
+          <h3 class="card-title">Bangalore Open 7v7 Turf Cup</h3>
+          <div class="card-venue">📍 Greenfield Arena, Ground 1</div>
+          <div class="card-meta">
+            <div>Fee: <strong>₹3,000</strong></div>
+            <div>Prize: <strong>₹40,000</strong></div>
+            <div>Teams: <strong>14/16</strong></div>
+          </div>
+          <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="openRegistrationModal()">Register Squad</button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="event-card">
+        <div class="card-banner" style="background: linear-gradient(135deg, #3A2F24, #5C4734);">
+          <div class="banner-tags">
+            <span class="tag-sport">CRICKET</span>
+            <span class="tag-status">REGISTRATION OPEN</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-date">01 DEC • T20 ROUND-ROBIN</div>
+          <h3 class="card-title">Corporate Titans Super Trophy</h3>
+          <div class="card-venue">📍 Skylight Sports Complex</div>
+          <div class="card-meta">
+            <div>Fee: <strong>₹4,000</strong></div>
+            <div>Prize: <strong>₹75,000</strong></div>
+            <div>Teams: <strong>6/12</strong></div>
+          </div>
+          <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="openRegistrationModal()">Register Squad</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Registration Modal -->
+  <div id="regModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Register Your Team</h3>
+        <button class="close-btn" onclick="closeRegistrationModal()">✕</button>
+      </div>
+      <div class="form-group">
+        <label>Team Name</label>
+        <input type="text" placeholder="e.g. Koramangala Knights">
+      </div>
+      <div class="form-group">
+        <label>Select Tournament</label>
+        <select>
+          <option>Apex Monsoon Premier Championship (Cricket)</option>
+          <option>Bangalore Open 7v7 (Football)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Captain Name</label>
+        <input type="text" placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label>Captain Phone / WhatsApp</label>
+        <input type="tel" placeholder="+91 98765 43210">
+      </div>
+      <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="submitRegistration()">Confirm & Submit Roster</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="brand-title" style="color: #FFF; font-size: 28px;">FIELD<span>VERSE</span></div>
+    <p>The Ultimate Sports Event Universe • Powered by Supabase & Three.js</p>
+  </footer>
+
+  <!-- Three.js Interactive Ball Script -->
+  <script>
+    const canvas = document.getElementById('three-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Ground disk
+    const groundGeo = new THREE.CylinderGeometry(2.4, 2.4, 0.1, 32);
+    const groundMat = new THREE.MeshStandardMaterial({ color: 0x303C32, roughness: 0.8 });
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.position.y = -1.2;
+    scene.add(ground);
+
+    // Sports Ball (Leather Red & White Stitch)
+    const ballGeo = new THREE.SphereGeometry(1, 32, 32);
+    const ballMat = new THREE.MeshStandardMaterial({
+      color: 0x8A2A20, // Cricket leather ball
+      roughness: 0.3,
+      metalness: 0.1
+    });
+    const ball = new THREE.Mesh(ballGeo, ballMat);
+    scene.add(ball);
+
+    // Seam ring
+    const seamGeo = new THREE.TorusGeometry(1.01, 0.03, 16, 100);
+    const seamMat = new THREE.MeshStandardMaterial({ color: 0xE8D8BC, roughness: 0.4 });
+    const seam = new THREE.Mesh(seamGeo, seamMat);
+    ball.add(seam);
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.8);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xE8D8BC, 1.2);
+    dirLight.position.set(5, 8, 4);
+    scene.add(dirLight);
+
+    camera.position.set(0, 1.5, 4.5);
+    camera.lookAt(0, 0, 0);
+
+    // Mouse Interaction
+    let isDragging = false;
+    let prevMouseX = 0;
+    let prevMouseY = 0;
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const deltaX = e.clientX - prevMouseX;
+        const deltaY = e.clientY - prevMouseY;
+        ball.rotation.y += deltaX * 0.01;
+        ball.rotation.x += deltaY * 0.01;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+      }
+    });
+
+    // Animation Loop
+    function animate() {
+      requestAnimationFrame(animate);
+      if (!isDragging) {
+        ball.rotation.y += 0.008;
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      if (canvas.clientWidth && canvas.clientHeight) {
+        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+      }
+    });
+
+    // UI Functions
+    function switchSport(sport) {
+      document.querySelectorAll('.sport-pill').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      if (sport === 'football') {
+        ballMat.color.setHex(0xE8D8BC);
+      } else {
+        ballMat.color.setHex(0x8A2A20);
+      }
+    }
+
+    function highlightZone(zone) {
+      document.querySelectorAll('.zone-chip').forEach(z => z.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+
+    function openRegistrationModal() {
+      document.getElementById('regModal').style.display = 'flex';
+    }
+
+    function closeRegistrationModal() {
+      document.getElementById('regModal').style.display = 'none';
+    }
+
+    function submitRegistration() {
+      alert('Squad Registration Submitted Successfully! Confirmation sent via WhatsApp & Email.');
+      closeRegistrationModal();
+    }
+  </script>
+</body>
+</html>
